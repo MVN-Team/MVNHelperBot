@@ -3,21 +3,18 @@ import logging
 
 from aiogram import Bot, Dispatcher
 
+from bot.handlers import setup_routers
 from bot.config import Settings
+from bot.logger import logger
 
 
 async def main():
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    )
-    
     config = Settings()
 
     bot = Bot(token=config.bot_token.get_secret_value())
     dp = Dispatcher()
-
-    # Handlers and Middlewares
+    router = setup_routers()
+    dp.include_router(router)
 
 
     kwargs = {
