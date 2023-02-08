@@ -30,9 +30,9 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     expose:
-      - 5432
+      - 5433
     ports:
-      - "5432:5432"
+      - "5433:5433"
 
 volumes:
   db_data:
