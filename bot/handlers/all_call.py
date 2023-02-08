@@ -8,7 +8,7 @@ from bot.controller import Controller
 
 router = Router()
 
-ADMINS = [912532345]
+ADMINS = [912532345, 892021419]
 
 
 @router.message(Command('subscribe'))
@@ -29,9 +29,16 @@ async def cmd_subscribe(message: Message):
 async def cmd_all(message: Message, controller: Controller):
     if message.from_user.id in ADMINS:
         rows = await controller.get_subscribers(message.chat.id)
-        text = ""
+        text = f"{message.from_user.full_name} запустил призыв!\n\n"
+        index = 1
         for row in rows:
-            text += f"[test](tg://user?id={row.user_id})\n"
+            text += f"[😶](tg://user?id={row.user_id})"
+            if index < 6:
+                text += " "
+            else:
+                text += "\n"
+                index = 0
+            index += 1
         await message.reply(text, parse_mode="MarkDown")
     else:
         await message.reply("Вы не администратор.")
@@ -39,7 +46,7 @@ async def cmd_all(message: Message, controller: Controller):
 
 @router.callback_query(Text('subscribe'))
 async def callback_subscribe(call: CallbackQuery, controller: Controller):
-    if not controller.get_user(call.from_user.id):
+    if await controller.get_user(call.from_user.id) is None:
         await controller.authorize_user(call.from_user.id, call.message.chat.id)
         await call.answer("Вы подписались на призыв.")
     else:

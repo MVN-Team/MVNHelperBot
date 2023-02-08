@@ -18,7 +18,7 @@ class DatabaseAdapter:
         
     async def get_user(self, user_id: int):
         stmt = select(Subscriber).where(Subscriber.user_id == user_id)
-        return (await self.session.execute(stmt)).scalar_one()
+        return (await self.session.execute(stmt)).fetchone()
         
     async def get_subscribers(self, chat_id: int):
         stmt = select(Subscriber).where(Subscriber.chat_id == chat_id)

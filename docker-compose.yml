@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: mvn_bot
+    command: 
+      - /bin/bash
+      - -c
+      - |
+        alembic upgrade head
+        python -m bot
+    build:
+      context: .
+    volumes:
+      - ".env:/app/.env"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+    depends_on:
+      - db
+
+  db:
+    container_name: mvn_db
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+
+volumes:
+  db_data:
